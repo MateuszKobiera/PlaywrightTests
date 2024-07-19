@@ -1,14 +1,15 @@
 # Test conditions
 
-#### TC1 - Verify User Registration
-#### TC2 - Verify User Login
-#### TC3 - Verify Menu
-#### TC4 - Verify Displaying Articles Page
-#### TC5 - Verify Displaying Article Page 
-#### TC6 - Verify Adding New Article
-#### TC7 - Verify Comments Page
-#### TC8 - Verify Comment Page
-#### TC9 - Verify Adding New Comment
-#### TC10 - Verify Flashposts Page
-#### TC11 - Verify Adding New FlashPost
+#### TC1 - Verify Displaying Welcome Page
+#### TC2 - Verify User Registration
+#### TC3 - Verify User Login
+#### TC4 - Verify Menu
+#### TC5 - Verify Displaying Articles Page
+#### TC6 - Verify Displaying Article Page 
+#### TC7 - Verify Adding New Article
+#### TC8 - Verify Comments Page
+#### TC9 - Verify Comment Page
+#### TC10 - Verify Adding New Comment
+#### TC11 - Verify Flashposts Page
+#### TC12 - Verify Adding New FlashPost
 

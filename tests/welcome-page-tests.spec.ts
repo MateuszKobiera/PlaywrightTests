@@ -2,7 +2,7 @@ import {expect, test} from "@playwright/test";
 import {WelcomePage} from "../page-models/welcome-page";
 
 
-test.describe('Welcome Page', () => {
+test.describe('TC1 - Welcome Page', () => {
     test('should be displayed', async ({page}) => {
         const welcomePage = new WelcomePage(page);
         await welcomePage.goto();
