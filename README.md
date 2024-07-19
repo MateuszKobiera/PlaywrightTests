@@ -10,3 +10,7 @@
 6. Run `npm i`
 7. Run `npm run start`
 8. The application will be available at http://localhost:3000
+
+## How to run tests?
+1. Install Playwright `npx playwright install`
+2. Run `npx playwright test`
