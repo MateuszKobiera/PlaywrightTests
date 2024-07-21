@@ -1,4 +1,4 @@
-# Playwright tests portfolio
+# Playwright tests
 
 ## How to download app to test?
 
