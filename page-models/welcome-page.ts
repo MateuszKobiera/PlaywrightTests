@@ -20,7 +20,7 @@ export class WelcomePage {
         this.page = page;
         this.MenuButton = page.getByTestId('menu-main');
         this.MenuMainPageButton = this.MenuButton.locator('[href="/"]');
-        this.MenuAvatarButton = page.getByTestId('user-dropdown');
+        this.MenuAvatarButton = page.locator('[data-testid="user-dropdown"]');
         this.MenuBackofficeButton = page.locator('[href="/tools/backoffice.html"]');
         this.MenuJakTestowacButton = page.locator('[href="https://jaktestowac.pl"]').locator('[data-hover="Visit jaktestowac.pl"]');
         this.pageHeader = page.getByTestId('pageHeader').locator('h1');
