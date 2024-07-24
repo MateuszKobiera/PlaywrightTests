@@ -1,6 +1,7 @@
 import { type Locator, type Page } from '@playwright/test';
+import { DefaultPage } from './default-page';
 
-export class RegistrationPage {
+export class RegistrationPage extends DefaultPage {
   readonly Page: Page;
   readonly url = '/register.html';
 
@@ -13,9 +14,9 @@ export class RegistrationPage {
   readonly UserPicture: Locator;
   readonly AvatarSelect: Locator;
   readonly RegisterButton: Locator;
-  readonly PopUp: Locator;
 
   constructor(page: Page) {
+    super(page);
     this.Page = page;
 
     this.FirstNameInput = page.getByTestId('firstname');
@@ -27,7 +28,6 @@ export class RegistrationPage {
     this.UserPicture = page.locator('#userPicture');
     this.AvatarSelect = page.locator('select#avatar');
     this.RegisterButton = page.getByTestId('registerButton');
-    this.PopUp = page.locator('#alertPopup');
   }
 
   async goto() {
