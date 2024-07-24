@@ -5,6 +5,8 @@ export class RegistrationPage extends DefaultPage {
   readonly Page: Page;
   readonly url = '/register.html';
 
+  readonly RegisterForm: Locator;
+  readonly RegisterFormHeader: Locator;
   readonly FirstNameInput: Locator;
   readonly LastNameInput: Locator;
   readonly EmailInput: Locator;
@@ -14,20 +16,26 @@ export class RegistrationPage extends DefaultPage {
   readonly UserPicture: Locator;
   readonly AvatarSelect: Locator;
   readonly RegisterButton: Locator;
+  readonly SignInButton: Locator;
+  readonly SignInText: Locator;
 
   constructor(page: Page) {
     super(page);
     this.Page = page;
 
-    this.FirstNameInput = page.getByTestId('firstname');
-    this.LastNameInput = page.getByTestId('lastname');
-    this.EmailInput = page.getByTestId('email');
-    this.BirthdateInput = page.getByTestId('datepicker');
-    this.CloseBirthdatePopUp = page.locator('.ui-datepicker-close');
-    this.PasswordInput = page.getByTestId('password');
-    this.UserPicture = page.locator('#userPicture');
-    this.AvatarSelect = page.locator('select#avatar');
-    this.RegisterButton = page.getByTestId('registerButton');
+    this.RegisterForm = page.locator('.form');
+    this.RegisterFormHeader = this.RegisterForm.locator('h2');
+    this.FirstNameInput = this.RegisterForm.getByTestId('firstname');
+    this.LastNameInput = this.RegisterForm.getByTestId('lastname');
+    this.EmailInput = this.RegisterForm.getByTestId('email');
+    this.BirthdateInput = this.RegisterForm.getByTestId('datepicker');
+    this.CloseBirthdatePopUp = this.RegisterForm.locator('.ui-datepicker-close');
+    this.PasswordInput = this.RegisterForm.getByTestId('password');
+    this.UserPicture = this.RegisterForm.locator('#userPicture');
+    this.AvatarSelect = this.RegisterForm.locator('select#avatar');
+    this.RegisterButton = this.RegisterForm.getByTestId('registerButton');
+    this.SignInButton = this.RegisterForm.locator('a[href="/login"]');
+    this.SignInText = page.getByText('Already have an account? Sign in');
   }
 
   async goto() {

@@ -2,6 +2,7 @@ import { expect, test } from '@playwright/test';
 import { WelcomePage } from '../page-models/welcome-page';
 import { RegistrationPage } from '../page-models/registration-page';
 import { faker } from '@faker-js/faker';
+import { clickOutside } from '../utils/functions';
 
 test.describe('TC2 - Registraion', () => {
   test('User should be able to register to the platform', async ({ page }) => {
@@ -26,11 +27,19 @@ test.describe('TC2 - Registraion', () => {
     );
     const randomAvatar = faker.helpers.arrayElement(avatarOptions);
 
+    await expect(registrationPage.MenuArticlesButton).toBeVisible();
+    await expect(registrationPage.MenuCommentsButton).toBeVisible();
+    await expect(registrationPage.MenuFlashpostsButton).toBeVisible();
+
+    await expect(registrationPage.RegisterFormHeader).toHaveText('Register');
+    await expect(registrationPage.SignInText).toBeVisible();
+
+    await expect(registrationPage.SignInButton).toBeVisible();
     await registrationPage.FirstNameInput.fill(firstName);
     await registrationPage.LastNameInput.fill(lastName);
     await registrationPage.EmailInput.fill(email);
     await registrationPage.BirthdateInput.fill(birthdate);
-    await registrationPage.CloseBirthdatePopUp.click();
+    await clickOutside(page);
     await registrationPage.PasswordInput.fill(password);
     await registrationPage.AvatarSelect.selectOption(randomAvatar);
     await registrationPage.RegisterButton.click();
