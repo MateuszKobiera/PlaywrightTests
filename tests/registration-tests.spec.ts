@@ -22,6 +22,7 @@ test.describe('TC2 - Registraion', () => {
     await page.waitForResponse(
       (response: Response) => response.url().includes('/api/images/user') && response.status() === 200
     );
+
     const avatarOptions = await registrationPage.AvatarSelect.evaluate((el) =>
       Array.from(el.options).map((option) => option.value)
     );
