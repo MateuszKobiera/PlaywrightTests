@@ -1,56 +1,58 @@
-
 import { test, expect } from '@playwright/test';
+import { DevRunPage } from '../page-models/dev-run-page';
 
 test.describe('DevRun Game', () => {
+  let devRunPage: DevRunPage;
+
   test.beforeEach(async ({ page }) => {
-    await page.goto('http://localhost:3000/games/devrun.html');
+    devRunPage = new DevRunPage(page);
+    await page.goto(devRunPage.url);
   });
 
   test('starts the game when Start button is clicked', async ({ page }) => {
-    await page.click('#start-button');
-    await expect(page.locator('#game-container')).toBeVisible();
+    await devRunPage.StartButton.click();
+    await expect(devRunPage.GameContainer).toBeVisible();
   });
 
   test('jumps when space is pressed', async ({ page }) => {
-    await page.click('#start-button');
+    await devRunPage.StartButton.click();
     
-    const devHero = page.locator('#devHero');
-    const initialBottom = await devHero.evaluate((el) => window.getComputedStyle(el).bottom);
+    const initialBottom = await devRunPage.DevHero.evaluate((el) => window.getComputedStyle(el).bottom);
     
     await page.keyboard.press('Space');
     
     await expect(async () => {
-      const newBottom = await devHero.evaluate((el) => window.getComputedStyle(el).bottom);
+      const newBottom = await devRunPage.DevHero.evaluate((el) => window.getComputedStyle(el).bottom);
       expect(newBottom).not.toBe(initialBottom);
     }).toPass();
   });
 
   test('ends game on collision and shows final score', async ({ page }) => {
-    await page.click('#start-button');
+    await devRunPage.StartButton.click();
     
-    await expect(page.locator('#final-score-container')).toBeHidden();
+    await expect(devRunPage.FinalScoreContainer).toBeHidden();
     
     // Wait for collision (you might need to adjust the wait time)
     await page.waitForTimeout(5000);
     
-    await expect(page.locator('#final-score-container')).toBeVisible();
-    await expect(page.locator('#final-score-container')).toContainText('Game Over!');
+    await expect(devRunPage.FinalScoreContainer).toBeVisible();
+    await expect(devRunPage.FinalScoreContainer).toContainText('Game Over!');
 
-    await page.click('#reload-button');
-    await expect(page.locator('#score')).toContainText('Score: 0');
+    await devRunPage.ReloadButton.click();
+    await expect(devRunPage.ScoreDisplay).toContainText('Score: 0');
   });
 
   test('increases score by avoiding bugs', async ({ page }) => {
     // Start the game
-    await page.click('#start-button');
+    await devRunPage.StartButton.click();
 
     // Initial score should be 0
-    await expect(page.locator('#score')).toContainText('Score: 0');
+    await expect(devRunPage.ScoreDisplay).toContainText('Score: 0');
 
     // Function to jump when a bug is near
     const jumpWhenBugNear = async () => {
-      const heroRect = await page.locator('#devHero').boundingBox();
-      const bugRect = await page.locator('.bug').boundingBox();
+      const heroRect = await devRunPage.DevHero.boundingBox();
+      const bugRect = await devRunPage.BugObstacle.boundingBox();
 
       if (heroRect && bugRect) {
         // If the bug is close to the hero, jump
@@ -71,7 +73,7 @@ test.describe('DevRun Game', () => {
     }
 
     // After playing, check if the score has increased
-    const finalScore = await page.locator('#score').textContent();
+    const finalScore = await devRunPage.ScoreDisplay.textContent();
     const score = finalScore ? parseInt(finalScore.split(': ')[1]) : 0;
     expect(score).toBeGreaterThan(0);
   });
