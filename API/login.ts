@@ -7,5 +7,7 @@ export async function postLogin(request: APIRequestContext, userData: any) {
       'Content-Type': 'application/json'
     }
   });
-  return { response };
+  const body = await response.json();
+  
+  return { response, body };
 }

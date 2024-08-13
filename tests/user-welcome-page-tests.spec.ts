@@ -10,14 +10,77 @@ test.describe('User Welcome Page', () => {
   let userWelcomePage: UserWelcomePage;
   const newUser = validUser;
 
-  test.beforeEach(async ({ page, request }) => {
-    const { response } = await postRegistration(request, newUser);
-    expect(response.status()).toBe(201);
-    const { response: responseLogin } = await postLogin(request, { email: newUser.email, password: newUser.password });
+  test.beforeEach(async ({ page, request, context }) => {
+    // const { response } = await postRegistration(request, newUser);
+    // expect(response.status()).toBe(201);
+    const { response: responseLogin, body } = await postLogin(request, { email: 'test@test.pl', password: 'Test' });
     expect(responseLogin.status()).toBe(200);
+    const accessToken = body.access_token
+    console.log(accessToken)
+
 
     userWelcomePage = new UserWelcomePage(page);
     await page.goto(userWelcomePage.url);
+
+    const url = new URL(page.url());
+    const domain = url.hostname;
+    console.log(domain);
+    const twoHoursFromNow = Math.floor(Date.now() / 1000 + 2 * 60 * 60).toString();
+
+    await context.addCookies([
+        {
+          name: 'token',
+          value: accessToken,
+          domain: domain,
+          path: '/',
+          httpOnly: false,
+          secure: false,
+        },
+        {
+            name: 'expires',
+            value: twoHoursFromNow,
+            domain: domain,
+            path: '/',
+            httpOnly: true,
+            secure: true
+          },
+          {
+            name: 'avatar',
+            value: '.%5Cdata%5Cusers%5C36b4bac5-dc16-4dc7-92d4-69804ab0df7b.jpg',
+            domain: domain,
+            path: '/'
+          },
+          {
+            name: 'email',
+            value: 'test%40test.pl',
+            domain: domain,
+            path: '/'
+          },
+          {
+            name: 'firstname',
+            value: 'TE',
+            domain: domain,
+            path: '/'
+          },
+          {
+            name: 'id',
+            value: '17',
+            domain: domain,
+            path: '/'
+          },
+          {
+            name: 'username',
+            value: 'test%40test.pl',
+            domain: domain,
+            path: '/'
+          },
+      ]);
+      await context.setExtraHTTPHeaders({
+        'Authorization': `Bearer ${accessToken}`
+      });
+
+      userWelcomePage = new UserWelcomePage(page);
+      await page.goto(userWelcomePage.url);
   });
 
   test('should display welcome message and user information', async () => {

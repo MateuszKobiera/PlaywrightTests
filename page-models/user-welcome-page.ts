@@ -24,14 +24,14 @@ export class UserWelcomePage extends DefaultPage {
     super(page);
     this.Page = page;
 
-    this.HelloMessage = page.getByTestId('hello');
+    this.HelloMessage = page.locator('[data-testid="hello"]');
     this.CountdownMessage = page.getByTestId('countDown');
     this.MyProfileButton = page.locator('#btnMyAccountLink');
     this.MyArticlesButton = page.locator('#btnArticlesLink');
     this.MyCommentsButton = page.locator('#btnCommentsLink');
     this.SurveysButton = page.locator('#btnSurveysLink');
     this.GamesButton = page.locator('#btnGamesLink');
-    this.LogoutButton = page.getByTestId('logoutButton');
+    this.LogoutButton = page.getByTestId('btnLogout')
     this.DeleteAccountButton = page.getByTestId('deleteButton');
     this.EditDashboardButton = page.locator('#btnEditDashbaord');
     this.DarkModeToggle = page.locator('#darkmode-switch');
