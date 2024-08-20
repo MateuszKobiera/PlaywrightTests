@@ -1,14 +1,12 @@
 import { test, expect } from '@playwright/test';
 import { UserWelcomePage } from '../page-models/user-welcome-page';
 import { postRegistration } from '../API/registration';
-import { validUser } from '../data/users';
 import { postLogin } from '../API/login';
 
 
 
 test.describe('User Welcome Page', () => {
   let userWelcomePage: UserWelcomePage;
-  const newUser = validUser;
 
   test.beforeEach(async ({ page, request, context }) => {
     // const { response } = await postRegistration(request, newUser);
@@ -16,16 +14,15 @@ test.describe('User Welcome Page', () => {
     const { response: responseLogin, body } = await postLogin(request, { email: 'test@test.pl', password: 'Test' });
     expect(responseLogin.status()).toBe(200);
     const accessToken = body.access_token
-    console.log(accessToken)
-
 
     userWelcomePage = new UserWelcomePage(page);
     await page.goto(userWelcomePage.url);
 
     const url = new URL(page.url());
     const domain = url.hostname;
-    console.log(domain);
-    const twoHoursFromNow = Math.floor(Date.now() / 1000 + 2 * 60 * 60).toString();
+    const fiveDaysFromNow = Date.now() + 5 * 24 * 60 * 60 * 1000;
+    const expireTimestamp = Math.floor(fiveDaysFromNow).toString();
+    const expiresTwoHoursFromNow = new Date(Date.now() + 2 * 60 * 60 * 1000).getTime() / 1000;
 
     await context.addCookies([
         {
@@ -33,54 +30,79 @@ test.describe('User Welcome Page', () => {
           value: accessToken,
           domain: domain,
           path: '/',
+          expires: expiresTwoHoursFromNow,
           httpOnly: false,
           secure: false,
+          sameSite: "Lax"
         },
         {
             name: 'expires',
-            value: twoHoursFromNow,
+            value: expireTimestamp,
             domain: domain,
             path: '/',
-            httpOnly: true,
-            secure: true
+            httpOnly: false,
+            expires: expiresTwoHoursFromNow,
+            secure: false,
+            sameSite: "Lax"
           },
           {
             name: 'avatar',
             value: '.%5Cdata%5Cusers%5C36b4bac5-dc16-4dc7-92d4-69804ab0df7b.jpg',
             domain: domain,
-            path: '/'
+            expires: expiresTwoHoursFromNow,
+            path: '/',
+            httpOnly: false,
+            secure: false,
+            sameSite: "Lax"
           },
           {
             name: 'email',
             value: 'test%40test.pl',
             domain: domain,
-            path: '/'
+            expires: expiresTwoHoursFromNow,
+            path: '/',
+            httpOnly: false,
+            secure: false,
+            sameSite: "Lax"
           },
           {
             name: 'firstname',
             value: 'TE',
             domain: domain,
-            path: '/'
+            expires: expiresTwoHoursFromNow,
+            path: '/',
+            httpOnly: false,
+            secure: false,
+            sameSite: "Lax"
           },
           {
             name: 'id',
             value: '17',
             domain: domain,
-            path: '/'
+            expires: expiresTwoHoursFromNow,
+            path: '/',
+            httpOnly: false,
+            secure: false,
+            sameSite: "Lax"
           },
           {
             name: 'username',
             value: 'test%40test.pl',
             domain: domain,
-            path: '/'
+            expires: expiresTwoHoursFromNow,
+            path: '/',
+            httpOnly: false,
+            secure: false,
+            sameSite: "Lax"
           },
       ]);
       await context.setExtraHTTPHeaders({
         'Authorization': `Bearer ${accessToken}`
       });
 
-      userWelcomePage = new UserWelcomePage(page);
-      await page.goto(userWelcomePage.url);
+    userWelcomePage = new UserWelcomePage(page);
+    await page.goto(userWelcomePage.url);
+    await expect(page).toHaveURL(userWelcomePage.url);
   });
 
   test('should display welcome message and user information', async () => {
@@ -133,11 +155,13 @@ test.describe('User Welcome Page', () => {
     expect(updatedTheme).not.toBe(initialTheme);
   });
 
-  test('should display correct time and timezone', async () => {
-    const currentTime = await userWelcomePage.CurrentTime.textContent();
-    expect(currentTime).toMatch(/\d{2}\/\d{2}\/\d{4} \d{2}:\d{2}:\d{2}/);
+    test('should display correct time and timezone', async ({ page }) => {
+      await expect(async () => {
+        const currentTime = await userWelcomePage.CurrentTime.textContent();
+        expect(currentTime).toMatch(/\d{2}\/\d{2}\/\d{4} \d{2}:\d{2}:\d{2}/);
+      }).toPass({ timeout: 5000 });
 
-    const timeZone = await userWelcomePage.TimeZone.textContent();
-    expect(timeZone).not.toBe('');
+      const timeZone = await userWelcomePage.TimeZone.textContent();
+      expect(timeZone).not.toBe('');
+    });
   });
-});
