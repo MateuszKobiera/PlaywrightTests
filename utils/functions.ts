@@ -3,16 +3,14 @@ import { validUser } from '../data/users';
 import { postRegistration } from '../API/registration';
 import { postLogin } from '../API/login';
 import { UserWelcomePage } from '../page-models/user-welcome-page';
+import { User } from '../models/user';
 
 export async function clickOutside(page: Page) {
   await page.mouse.click(1, 1);
 }
 
-export async function createVendorAndLogin(page: Page, request: APIRequestContext, context: BrowserContext) {
-  const newUser = validUser;
-  const { response: responseRegistration, body: bodyRegistration } = await postRegistration(request, newUser);
-  expect(responseRegistration.status()).toBe(201);
-  const { response: responseLogin, body: bodyLogin } = await postLogin(request, { email: newUser.email, password: newUser.password });
+export async function loginAsUser(page: Page, request: APIRequestContext, context: BrowserContext, user: User) {
+  const { response: responseLogin, body: bodyLogin } = await postLogin(request, { email: user.email, password: user.password });
   expect(responseLogin.status()).toBe(200);
   const accessToken = bodyLogin.access_token;
 
@@ -48,7 +46,7 @@ export async function createVendorAndLogin(page: Page, request: APIRequestContex
     },
     {
       name: 'avatar',
-      value: '.%5Cdata%5Cusers%5C' + newUser.avatar,
+      value: '.%5Cdata%5Cusers%5C' + user.avatar,
       domain: domain,
       expires: expiresTwoHoursFromNow,
       path: '/',
@@ -58,7 +56,7 @@ export async function createVendorAndLogin(page: Page, request: APIRequestContex
     },
     {
       name: 'email',
-      value: newUser.email.replace('@', '%40'),
+      value: user.email.replace('@', '%40'),
       domain: domain,
       expires: expiresTwoHoursFromNow,
       path: '/',
@@ -68,7 +66,7 @@ export async function createVendorAndLogin(page: Page, request: APIRequestContex
     },
     {
       name: 'firstname',
-      value: newUser.firstname,
+      value: user.firstname,
       domain: domain,
       expires: expiresTwoHoursFromNow,
       path: '/',
@@ -78,7 +76,7 @@ export async function createVendorAndLogin(page: Page, request: APIRequestContex
     },
     {
       name: 'id',
-      value: bodyRegistration.id.toString(),
+      value: user.id.toString(),
       domain: domain,
       expires: expiresTwoHoursFromNow,
       path: '/',
@@ -88,7 +86,7 @@ export async function createVendorAndLogin(page: Page, request: APIRequestContex
     },
     {
       name: 'username',
-      value: newUser.email.replace('@', '%40'),
+      value: user.email.replace('@', '%40'),
       domain: domain,
       expires: expiresTwoHoursFromNow,
       path: '/',
@@ -102,4 +100,14 @@ export async function createVendorAndLogin(page: Page, request: APIRequestContex
   });
 
   return userWelcomePage
+}
+
+export async function createVendorAndLogin(page: Page, request: APIRequestContext, context: BrowserContext) {
+  let user = validUser;
+  const { response: responseRegistration, body: bodyRegistration } = await postRegistration(request, user);
+  expect(responseRegistration.status()).toBe(201);
+  user.id = bodyRegistration.id;
+  let userWelcomePage = await loginAsUser(page, request, context, user);
+
+  return {userWelcomePage, user};
 }

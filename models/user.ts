@@ -5,4 +5,5 @@ export interface User {
   password: string;
   birthdate: string;
   avatar: string;
+  id?: BigInteger;
 }

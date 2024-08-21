@@ -32,7 +32,7 @@ export class UserWelcomePage extends DefaultPage {
     this.SurveysButton = page.locator('#btnSurveysLink');
     this.GamesButton = page.locator('#btnGamesLink');
     this.LogoutButton = page.getByTestId('btnLogout')
-    this.DeleteAccountButton = page.getByTestId('deleteButton');
+    this.DeleteAccountButton = page.getByTestId('btnDeleteAccount');
     this.EditDashboardButton = page.locator('#btnEditDashbaord');
     this.DarkModeToggle = page.locator('#darkmode-switch');
     this.CurrentTime = page.getByTestId('current-time');

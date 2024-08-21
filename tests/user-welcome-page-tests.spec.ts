@@ -3,15 +3,17 @@ import { UserWelcomePage } from '../page-models/user-welcome-page';
 import { postRegistration } from '../API/registration';
 import { postLogin } from '../API/login';
 import { validUser } from '../data/users';
-import { createVendorAndLogin } from '../utils/functions';
+import { createVendorAndLogin, loginAsUser } from '../utils/functions';
+import { User } from '../models/user';
 
 
 
 test.describe('User Welcome Page', () => {
   let userWelcomePage: UserWelcomePage;
+  let user: User;
 
   test.beforeEach(async ({ page, request, context }) => {
-    userWelcomePage = await createVendorAndLogin(page, request, context);
+    ({ userWelcomePage, user } = await createVendorAndLogin(page, request, context));
 
     await userWelcomePage.goto();
     await expect(page).toHaveURL(userWelcomePage.url);
@@ -46,16 +48,24 @@ test.describe('User Welcome Page', () => {
     await expect(userWelcomePage.Page).toHaveURL('/games/games.html');
   });
 
-  test('should have functional account management buttons', async () => {
-    await userWelcomePage.LogoutButton.click();
-    // Add assertion for logout behavior
+    test('should have functional account management buttons', async ({ page, request, context }) => {
+      await userWelcomePage.LogoutButton.click();
+      const cookies = await context.cookies();
+      expect(cookies).toHaveLength(0);
+      expect(page.url()).toContain('/login');
 
-    await userWelcomePage.Page.goto(userWelcomePage.url);
-    const deleteAccountDialog = userWelcomePage.Page.locator('dialog');
-    await userWelcomePage.DeleteAccountButton.click();
-    await expect(deleteAccountDialog).toBeVisible();
-    // Add more assertions for delete account dialog
-  });
+      await loginAsUser(page, request, context, user);
+
+      page.on('dialog', async dialog => {
+        expect(dialog.message()).toBe('Are you sure you want to delete your account?');
+        await dialog.accept(); // or dialog.dismiss() to cancel
+      });
+
+      await userWelcomePage.goto();
+      await userWelcomePage.DeleteAccountButton.click();
+
+      page.off('dialog', () => {});
+    });
 
   test('should have functional additional features', async () => {
     await userWelcomePage.EditDashboardButton.click();
