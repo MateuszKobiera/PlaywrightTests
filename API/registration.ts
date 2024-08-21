@@ -8,6 +8,6 @@ export async function postRegistration(request: APIRequestContext, userData: any
     }
   });
 
-  const responseBody = await response.json();
-  return { response, responseBody };
+  const body = await response.json();
+  return { response, body };
 }

@@ -2,6 +2,8 @@ import { test, expect } from '@playwright/test';
 import { UserWelcomePage } from '../page-models/user-welcome-page';
 import { postRegistration } from '../API/registration';
 import { postLogin } from '../API/login';
+import { validUser } from '../data/users';
+import { createVendorAndLogin } from '../utils/functions';
 
 
 
@@ -9,99 +11,9 @@ test.describe('User Welcome Page', () => {
   let userWelcomePage: UserWelcomePage;
 
   test.beforeEach(async ({ page, request, context }) => {
-    // const { response } = await postRegistration(request, newUser);
-    // expect(response.status()).toBe(201);
-    const { response: responseLogin, body } = await postLogin(request, { email: 'test@test.pl', password: 'Test' });
-    expect(responseLogin.status()).toBe(200);
-    const accessToken = body.access_token
+    userWelcomePage = await createVendorAndLogin(page, request, context);
 
-    userWelcomePage = new UserWelcomePage(page);
-    await page.goto(userWelcomePage.url);
-
-    const url = new URL(page.url());
-    const domain = url.hostname;
-    const fiveDaysFromNow = Date.now() + 5 * 24 * 60 * 60 * 1000;
-    const expireTimestamp = Math.floor(fiveDaysFromNow).toString();
-    const expiresTwoHoursFromNow = new Date(Date.now() + 2 * 60 * 60 * 1000).getTime() / 1000;
-
-    await context.addCookies([
-        {
-          name: 'token',
-          value: accessToken,
-          domain: domain,
-          path: '/',
-          expires: expiresTwoHoursFromNow,
-          httpOnly: false,
-          secure: false,
-          sameSite: "Lax"
-        },
-        {
-            name: 'expires',
-            value: expireTimestamp,
-            domain: domain,
-            path: '/',
-            httpOnly: false,
-            expires: expiresTwoHoursFromNow,
-            secure: false,
-            sameSite: "Lax"
-          },
-          {
-            name: 'avatar',
-            value: '.%5Cdata%5Cusers%5C36b4bac5-dc16-4dc7-92d4-69804ab0df7b.jpg',
-            domain: domain,
-            expires: expiresTwoHoursFromNow,
-            path: '/',
-            httpOnly: false,
-            secure: false,
-            sameSite: "Lax"
-          },
-          {
-            name: 'email',
-            value: 'test%40test.pl',
-            domain: domain,
-            expires: expiresTwoHoursFromNow,
-            path: '/',
-            httpOnly: false,
-            secure: false,
-            sameSite: "Lax"
-          },
-          {
-            name: 'firstname',
-            value: 'TE',
-            domain: domain,
-            expires: expiresTwoHoursFromNow,
-            path: '/',
-            httpOnly: false,
-            secure: false,
-            sameSite: "Lax"
-          },
-          {
-            name: 'id',
-            value: '17',
-            domain: domain,
-            expires: expiresTwoHoursFromNow,
-            path: '/',
-            httpOnly: false,
-            secure: false,
-            sameSite: "Lax"
-          },
-          {
-            name: 'username',
-            value: 'test%40test.pl',
-            domain: domain,
-            expires: expiresTwoHoursFromNow,
-            path: '/',
-            httpOnly: false,
-            secure: false,
-            sameSite: "Lax"
-          },
-      ]);
-      await context.setExtraHTTPHeaders({
-        'Authorization': `Bearer ${accessToken}`
-      });
-
-    userWelcomePage = new UserWelcomePage(page);
-    await page.goto(userWelcomePage.url);
+    await userWelcomePage.goto();
     await expect(page).toHaveURL(userWelcomePage.url);
   });
 
