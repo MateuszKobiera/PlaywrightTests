@@ -26,8 +26,4 @@ export class WelcomePage extends DefaultPage {
     this.Footer = page.locator('footer');
     this.FooterJakTestowacButton = page.locator('footer > div > a[href="https://jaktestowac.pl"]');
   }
-
-  async goto() {
-    await this.page.goto('/');
-  }
 }

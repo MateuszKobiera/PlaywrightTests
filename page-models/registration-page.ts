@@ -3,6 +3,7 @@ import { DefaultPage } from './default-page';
 
 export class RegistrationPage extends DefaultPage {
   readonly Page: Page;
+  // @ts-ignore
   readonly url = '/register.html';
 
   readonly RegisterForm: Locator;
@@ -36,9 +37,5 @@ export class RegistrationPage extends DefaultPage {
     this.RegisterButton = this.RegisterForm.getByTestId('registerButton');
     this.SignInButton = this.RegisterForm.locator('a[href="/login"]');
     this.SignInText = page.getByText('Already have an account? Sign in');
-  }
-
-  async goto() {
-    await this.Page.goto(this.url);
   }
 }

@@ -3,6 +3,7 @@ import { DefaultPage } from './default-page';
 
 export class UserWelcomePage extends DefaultPage {
   readonly Page: Page;
+  // @ts-ignore
   readonly url = '/welcome';
 
   readonly HelloMessage: Locator;
@@ -31,16 +32,12 @@ export class UserWelcomePage extends DefaultPage {
     this.MyCommentsButton = page.locator('#btnCommentsLink');
     this.SurveysButton = page.locator('#btnSurveysLink');
     this.GamesButton = page.locator('#btnGamesLink');
-    this.LogoutButton = page.getByTestId('btnLogout')
+    this.LogoutButton = page.getByTestId('btnLogout');
     this.DeleteAccountButton = page.getByTestId('btnDeleteAccount');
     this.EditDashboardButton = page.locator('#btnEditDashbaord');
     this.DarkModeToggle = page.locator('#darkmode-switch');
     this.CurrentTime = page.getByTestId('current-time');
     this.TimeZone = page.getByTestId('time-zone');
     this.MyAvatar = page.locator('#myAvatar');
-  }
-
-  async goto() {
-    await this.Page.goto(this.url);
   }
 }

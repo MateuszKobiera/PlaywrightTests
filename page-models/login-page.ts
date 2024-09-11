@@ -3,6 +3,7 @@ import { DefaultPage } from './default-page';
 
 export class LoginPage extends DefaultPage {
   readonly Page: Page;
+  // @ts-ignore
   readonly url = '/login/';
   readonly LoginHeader: Locator;
   readonly UsernameInput: Locator;
@@ -21,13 +22,9 @@ export class LoginPage extends DefaultPage {
     this.UsernameInput = page.getByTestId('pageHeader').getByTestId('username');
     this.PasswordInput = page.getByTestId('password');
     this.KeepSignInCheckbox = page.getByTestId('keepSignIn');
-    this.DontHaveAccountText = page.getByText('Don\'t have an account? Register, it\'s quick and free!');
-    this.RegisterButton = page.getByRole('link', { name: 'Register' })
+    this.DontHaveAccountText = page.getByText("Don't have an account? Register, it's quick and free!");
+    this.RegisterButton = page.getByRole('link', { name: 'Register' });
     this.LoginButton = page.getByTestId('loginButton');
     this.LoginErrorText = page.locator('[data-testid="login-error"]');
-  }
-
-  async goto() {
-    await this.Page.goto(this.url);
   }
 }

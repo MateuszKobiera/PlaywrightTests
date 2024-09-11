@@ -1,12 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { UserWelcomePage } from '../page-models/user-welcome-page';
-import { postRegistration } from '../API/registration';
-import { postLogin } from '../API/login';
-import { validUser } from '../data/users';
 import { createVendorAndLogin, loginAsUser } from '../utils/functions';
 import { User } from '../models/user';
-
-
 
 test.describe('User Welcome Page', () => {
   let userWelcomePage: UserWelcomePage;
@@ -48,27 +43,27 @@ test.describe('User Welcome Page', () => {
     await expect(userWelcomePage.Page).toHaveURL('/games/games.html');
   });
 
-    test('should have functional account management buttons', async ({ page, request, context }) => {
-      await userWelcomePage.LogoutButton.click();
-      const cookies = await context.cookies();
-      expect(cookies).toHaveLength(0);
-      expect(page.url()).toContain('/login');
+  test('should have functional account management buttons', async ({ page, request, context }) => {
+    await userWelcomePage.LogoutButton.click();
+    const cookies = await context.cookies();
+    expect(cookies).toHaveLength(0);
+    expect(page.url()).toContain('/login');
 
-      await loginAsUser(page, request, context, user);
+    await loginAsUser(page, request, context, user);
 
-      page.on('dialog', async dialog => {
-        expect(dialog.message()).toBe('Are you sure you want to delete your account?');
-        await dialog.accept(); // or dialog.dismiss() to cancel
-      });
-
-      await userWelcomePage.goto();
-      await userWelcomePage.DeleteAccountButton.click();
-
-      page.off('dialog', () => {});
+    page.on('dialog', async (dialog) => {
+      expect(dialog.message()).toBe('Are you sure you want to delete your account?');
+      await dialog.accept(); // or dialog.dismiss() to cancel
     });
 
+    await userWelcomePage.goto();
+    await userWelcomePage.DeleteAccountButton.click();
+
+    page.off('dialog', () => {});
+  });
+
   test('should have functional additional features', async () => {
-    await userWelcomePage.EditDashboardButton.click();
+    await userWelcomePage.EditDashboardButton.click({ timeout: 10000 });
     // Add assertions for edit dashboard behavior
 
     const initialTheme = await userWelcomePage.Page.evaluate(() => document.body.classList.contains('darkmode'));
@@ -77,13 +72,13 @@ test.describe('User Welcome Page', () => {
     expect(updatedTheme).not.toBe(initialTheme);
   });
 
-    test('should display correct time and timezone', async ({ page }) => {
-      await expect(async () => {
-        const currentTime = await userWelcomePage.CurrentTime.textContent();
-        expect(currentTime).toMatch(/\d{2}\/\d{2}\/\d{4} \d{2}:\d{2}:\d{2}/);
-      }).toPass({ timeout: 5000 });
+  test('should display correct time and timezone', async () => {
+    await expect(async () => {
+      const currentTime = await userWelcomePage.CurrentTime.textContent();
+      expect(currentTime).toMatch(/\d{2}\/\d{2}\/\d{4} \d{2}:\d{2}:\d{2}/);
+    }).toPass({ timeout: 5000 });
 
-      const timeZone = await userWelcomePage.TimeZone.textContent();
-      expect(timeZone).not.toBe('');
-    });
+    const timeZone = await userWelcomePage.TimeZone.textContent();
+    expect(timeZone).not.toBe('');
   });
+});

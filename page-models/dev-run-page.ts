@@ -3,8 +3,8 @@ import { DefaultPage } from './default-page';
 
 export class DevRunPage extends DefaultPage {
   readonly Page: Page;
+  // @ts-ignore
   readonly url = '/games/devrun.html';
-
   readonly StartButton: Locator;
   readonly GameContainer: Locator;
   readonly DevHero: Locator;

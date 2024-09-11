@@ -2,6 +2,7 @@ import { type Locator, type Page } from '@playwright/test';
 
 export class DefaultPage {
   readonly Page: Page;
+  readonly url = '/';
   readonly PopUp: Locator;
   readonly MenuBanner: Locator;
   readonly MenuBannerWithButtons: Locator;
@@ -33,5 +34,9 @@ export class DefaultPage {
     this.MenuJakTestowacButton = page
       .locator('[href="https://jaktestowac.pl"]')
       .locator('[data-hover="Visit jaktestowac.pl"]');
+  }
+
+  async goto() {
+    await this.Page.goto(this.url);
   }
 }
