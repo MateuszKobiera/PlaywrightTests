@@ -8,6 +8,8 @@ export class DatabaseSqlPlaygroundPage {
   readonly SQLQueryEditorInput: Locator;
   readonly SQLQueryEditorButton: Locator;
   readonly Table: Locator;
+  readonly TableHeaders: Locator;
+  readonly TableRows: Locator;
 
   constructor(page: Page) {
     this.Page = page;
@@ -16,5 +18,7 @@ export class DatabaseSqlPlaygroundPage {
     this.SQLQueryEditorInput = this.SQLQueryEditor.locator('textarea').first();
     this.SQLQueryEditorButton = page.locator('[id="floatingBox"] button[onclick="runQuery()"]');
     this.Table = page.locator('table');
+    this.TableHeaders = this.Table.locator('th');
+    this.TableRows = this.Table.locator('tbody >> tr');
   }
 }
