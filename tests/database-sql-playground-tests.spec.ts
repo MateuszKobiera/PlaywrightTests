@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 import { DatabaseSqlPlaygroundPage } from '../page-models/database-sql-playground';
 import { validUser } from '../data/users';
 import { postRegistration } from '../API/registration';
@@ -56,9 +56,7 @@ test.describe('database-sql-playground-tests', () => {
   test('SQL Query can be run to find new users', async ({ request }) => {
     const SQL_QUERY = "SELECT * FROM users WHERE email = 'test@test.pl'";
 
-    const newUser = validUser;
-
-    const { response } = await postRegistration(request, newUser);
+    const { response } = await postRegistration(request, validUser);
     expect(response.status()).toBe(201);
 
     await runSQLQuery(SQL_QUERY);
